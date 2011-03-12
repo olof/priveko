@@ -1,0 +1,22 @@
+balance: 
+     626 # checking account
+--------
+     626
+
+debts: 
+     100 # my brother owes me some monies
+    -300 # i owe my friend some money
+--------
+     100
+
+out: 
+     700 # buying candy
+--------
+     700
+
+summary: 
+     626 # balance
+     100 # debts
+     700 # out
+--------
+    1426

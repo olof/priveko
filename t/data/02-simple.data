@@ -1,0 +1,17 @@
+foo: 
+     300 # lorem
+     800 # ipsum
+--------
+       0
+
+bar:
+       1 # smth
+       2 # smth more
+--------
+       0
+
+summary:
+       0 # foo
+       0 # bar
+--------
+       0
