@@ -15,6 +15,7 @@ use feature qw/say/;
 
 my @output;
 my @sections;
+my $summary = 0; # has the summary been outputted?
 my $opts;
 
 sub output_section {
@@ -71,6 +72,7 @@ sub summary {
 		push @items, $_->[1];
 	}
 	output_secsum(@items);
+	$summary = 1;
 }
 
 my %section = (
@@ -89,6 +91,7 @@ while(<>) {
 	}
 }
 
+summary() unless $summary;
 print join "\n", @output;
 
 =head1 NAME 
