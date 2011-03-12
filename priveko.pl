@@ -14,6 +14,7 @@ use warnings;
 use feature qw/say/;
 
 my @output;
+my @sections;
 my $opts;
 
 my($in, $out, $balance) = (0,0,0);
@@ -65,28 +66,27 @@ sub section {
 
 sub summary {
 	output_section('summary');
+	my @items;
 	
-	output_element($balance, 'balance') if $balance;
-	output_element($in, 'in') if $in;
-	output_element($out, 'out') if $out;
-	output_secsum($balance, $in, $out);
+	foreach(@sections) {
+		output_element($_->[1], $_->[0]);
+		push @items, $_->[1];
+	}
+	output_secsum(@items);
 }
 
 my %section = (
-	in => sub { $in = section('in') },
-	out => sub { $out = section('out') },
-	balance => sub { $balance = section('out') },
+	default => sub { my $s = shift; push @sections, [$s, section($s)] },
 	summary => sub { summary() },
 );
 
 while(<>) {
 	chomp;
 	if(/^(\w+):/) {
-		if(exists $section{$1}) {
+		if(lc $1 eq 'summary') {
 			$section{$1}->();
 		} else {
-			say STDERR "Error: unknown section $1 on row $.";
-			exit(1);
+			$section{default}->($1);
 		}
 	}
 }
@@ -111,11 +111,9 @@ as well as a summary section with each section summed to a total.
 
 =head1 FILE FORMAT
 
-The file consists of one or more sections. For now, the possible sections
-are predefined, and it is an error to try to define another section. The
-available sections are: B<in>, B<out>, B<balance> and B<summary>. The last
-section, summary, is a special section, as this will be completly 
-overwritten when you run priveko.
+The file consists of one or more arbitrarily named sections. There is one
+special section, B<summary>. This section will be completly overwritten 
+when you run priveko.
 
 Each section consists of lines with the transaction balance and a comment, 
 of the format:
