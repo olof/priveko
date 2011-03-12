@@ -90,43 +90,43 @@ my $nochange = join '', <$fh>;
 close $fh;
 
 is(
-	`perl priveko.pl t/data/02-minimum.data`,
+	`perl priveko t/data/02-minimum.data`,
 	$minimum,
 	'Bare minimum of what the parser accepts'
 );
 
 is(
-	`perl priveko.pl t/data/02-nochange.data`,
+	`perl priveko t/data/02-nochange.data`,
 	$nochange,
 	'No difference between output and file'
 );
 
 is(
-	`perl priveko.pl t/data/02-update.data`,
+	`perl priveko t/data/02-update.data`,
 	$update,
 	'priveko should update some fields'
 );
 
 is(
-	`perl priveko.pl t/data/02-too_simple.data`,
+	`perl priveko t/data/02-too_simple.data`,
 	$toosimple,
 	'just one value'
 );
 
 is(
-	`perl priveko.pl t/data/02-too_simple_no_summary.data`,
+	`perl priveko t/data/02-too_simple_no_summary.data`,
 	$toosimple,
 	'just one value (generate summary)'
 );
 
 is(
-	`perl priveko.pl t/data/02-simple.data`,
+	`perl priveko t/data/02-simple.data`,
 	$simple,
 	'verify that priveko can do simple math'
 );
 
 is(
-	system('perl priveko.pl t/data/02-broken.data 2>/dev/null')>>8,
+	system('perl priveko t/data/02-broken.data 2>/dev/null')>>8,
 	1,
 	'priveko should fail on syntax error'
 );
