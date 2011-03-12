@@ -17,8 +17,6 @@ my @output;
 my @sections;
 my $opts;
 
-my($in, $out, $balance) = (0,0,0);
-
 sub output_section {
 	my $sec = shift;
 	push @output, "$sec: ";
