@@ -72,6 +72,7 @@ sub section {
 	while(<$infh>) {
 		chomp;
 		last if /^--------/;
+		last if /^\s*$/;
 		my ($comment) = /#\s*(.*)$/;
 		s/#.*//;
 		s/\s*//g;
