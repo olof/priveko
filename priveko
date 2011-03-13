@@ -12,11 +12,37 @@ my $APP = 'priveko';
 use strict;
 use warnings;
 use feature qw/say/;
+use Getopt::Long;
+use Pod::Usage qw/pod2usage/;
 
 my @output;
 my @sections;
 my $summary = 0; # has the summary been outputted?
-my $opts;
+my $opts = { stdout=>1 };
+
+GetOptions(
+	'u|update' => \$opts->{update},
+	'f|file:s' => \$opts->{file},
+	's|stdout!' => \$opts->{stdout},
+	'h|help' => sub { help(0) },
+);
+
+help(1, "No infile specified") unless @ARGV; 
+my $infile = shift;
+open my $infh, '<', $infile or die("Error: $!");
+
+sub help {
+	my $exitval = shift;
+	my $error = shift ;
+
+	pod2usage(
+		'-message' => "Error: $error",
+		'-verbose' => 99,
+		'-sections' => [qw/NAME USAGE OPTIONS/],
+	);
+
+	exit($exitval);
+}
 
 sub output_section {
 	my $sec = shift;
@@ -43,7 +69,7 @@ sub section {
 
 	output_section($section);
 
-	while(<>) {
+	while(<$infh>) {
 		chomp;
 		last if /^--------/;
 		my ($comment) = /#\s*(.*)$/;
@@ -80,7 +106,7 @@ my %section = (
 	summary => sub { summary() },
 );
 
-while(<>) {
+while(<$infh>) {
 	chomp;
 	if(/^(\w+):/) {
 		if(lc $1 eq 'summary') {
@@ -91,8 +117,26 @@ while(<>) {
 	}
 }
 
+close $infh;
+
 summary() unless $summary;
-print join "\n", @output;
+my $outstr = join "\n", @output;
+
+if($opts->{stdout}) {
+	print $outstr;
+}
+
+if($opts->{file}) {
+	open my $fh, '>', $opts->{file} or die($!);
+	print $fh $outstr;
+	close $fh;
+}
+
+if($opts->{update}) {
+	open my $fh, '>', $infile or die($!);
+	print $fh $outstr;
+	close $fh;
+}
 
 =head1 NAME 
 
@@ -100,7 +144,10 @@ priveko - keeping track of your private economy
 
 =head1 USAGE
 
- priveko <file>
+ priveko <infile>
+ priveko --file outfile [--nostdout] <infile>
+ priveko --update [--nostdout] <infile>
+ priveko --help
 
 =head1 DESCRIPTION
 
@@ -109,6 +156,24 @@ tasks. All items are entered manually by you, directly in the text file.
 You don't have to calculated the sums by yourself; this is where priveko
 comes in. Just run the program and it will produce sums for each section
 as well as a summary section with each section summed to a total.
+
+=head1 OPTIONS
+
+=head2 --file <filename>
+
+Output the generated file to the file specified. 
+
+=head2 --update
+
+Output the generated file to the infile, overwriting the old file.
+
+=head2 --nostdout
+
+Do not output to stdout.
+
+=head2 --help
+
+Print help.
 
 =head1 FILE FORMAT
 
