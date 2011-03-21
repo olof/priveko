@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 use feature qw/say/;
-use Test::More tests=>7;
+use Test::More tests=>8;
 
 my $minimum = << 'EOF';
 balance: 
@@ -85,6 +85,24 @@ summary:
     1103
 EOF
 
+my $comments = << 'EOF';
+foo: 
+--------
+       0
+
+bar: 
+       1 # smth
+       2 # smth more
+--------
+       3
+
+summary: 
+       0 # foo
+       3 # bar
+--------
+       3
+EOF
+
 open my $fh, '<', 't/data/02-nochange.data';
 my $nochange = join '', <$fh>;
 close $fh;
@@ -123,6 +141,12 @@ is(
 	`perl priveko t/data/02-simple.data`,
 	$simple,
 	'verify that priveko can do simple math'
+);
+
+is(
+	`perl priveko t/data/02-comments.data`,
+	$comments,
+	'verify that priveko strips comments as it should'
 );
 
 is(
