@@ -87,6 +87,8 @@ EOF
 
 my $comments = << 'EOF';
 foo: 
+#     300 # lorem
+#     800 # ipsum
 --------
        0
 

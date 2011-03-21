@@ -55,6 +55,11 @@ sub output_element {
 	push @output, sprintf "%s%7d # %s", $n<0 ? '-' : ' ', abs($n), $c;
 }
 
+sub output_comment {
+	my ($c) = @_;
+	push @output, "#$c";
+}
+
 sub output_secsum {
 	my $n=0;
 	push @output, '--------';
@@ -74,10 +79,11 @@ sub section {
 		chomp;
 		last if /^--------/;
 		last if /^\s*$/;
-		my ($comment) = /#\s*(.*)$/;
+		my ($comment) = /#(.*)$/;
 		s/#.*//;
 		s/\s*//g;
-		next unless $_;
+		output_comment($comment) and next unless $_;
+		$comment=~s/^\s*//;
 
 		unless(/^-?\d+(?:[\.,]\d+)?$/) {
 			say STDERR "Error: bad input: $_ on row $.";
